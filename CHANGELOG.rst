@@ -1,11 +1,19 @@
 Changelog
 =========
 
-1.5.0 (UNRELEASED)
+1.6.0 (UNRELEASED)
+------------------
+
+1.5.0 (2022-01-07)
 ------------------
 
 * **BACKWARDS INCOMPATIBLE:** Removed support for Python 2.7 and Python 3.5.
+* **BACKWARDS INCOMPATIBLE:** We no longer distribute ``manylinux1``
+  wheels.
+* Added ``manylinux2014``, ``manylinux_2_24``, ``musllinux``, and macOS
+  ``universal2`` wheels (the latter supports macOS ``arm64``).
 * Update ``libsodium`` to 1.0.18-stable (July 25, 2021 release).
+* Add inline type hints.
 
 1.4.0 (2020-05-25)
 ------------------
@@ -68,7 +76,7 @@ Changelog
   and restructured high-level password hashing implementation to expose
   the same interface for all hashers.
 * Added support for 128 bit ``siphashx24`` variant of ``siphash24``.
-* Added support for ``from_seed`` APIs for X25519 keypair generation.
+* Added support for ``from_seed`` APIs for X25519 key pair generation.
 * Dropped support for Python 3.3.
 
 1.1.2 - 2017-03-31

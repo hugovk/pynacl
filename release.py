@@ -126,13 +126,14 @@ def release(version):
 
     run("python", "setup.py", "sdist")
 
-    packages = glob.glob("dist/PyNaCl-{}*".format(version))
-    run("twine", "upload", "-s", *packages)
+    sdist = glob.glob("dist/PyNaCl-{}*".format(version))
 
     github_actions_wheel_paths = build_github_actions_wheels(
         github_token, version
     )
+
     run("twine", "upload", *github_actions_wheel_paths)
+    run("twine", "upload", "-s", *sdist)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import cast
 
 import nacl.bindings
 import nacl.encoding
@@ -56,13 +57,13 @@ MEMLIMIT_MODERATE = 8 * MEMLIMIT_INTERACTIVE
 
 
 def kdf(
-    size,
-    password,
-    salt,
-    opslimit=OPSLIMIT_SENSITIVE,
-    memlimit=MEMLIMIT_SENSITIVE,
-    encoder=nacl.encoding.RawEncoder,
-):
+    size: int,
+    password: bytes,
+    salt: bytes,
+    opslimit: int = OPSLIMIT_SENSITIVE,
+    memlimit: int = MEMLIMIT_SENSITIVE,
+    encoder: nacl.encoding.Encoder = nacl.encoding.RawEncoder,
+) -> bytes:
     """
     Derive a ``size`` bytes long key from a caller-supplied
     ``password`` and ``salt`` pair using the scryptsalsa208sha256
@@ -128,18 +129,29 @@ def kdf(
     n_log2, r, p = nacl.bindings.nacl_bindings_pick_scrypt_params(
         opslimit, memlimit
     )
-    maxmem = memlimit + (2 ** 16)
+    maxmem = memlimit + (2**16)
 
     return encoder.encode(
         nacl.bindings.crypto_pwhash_scryptsalsa208sha256_ll(
-            password, salt, 2 ** n_log2, r, p, maxmem=maxmem, dklen=size
+            password,
+            salt,
+            # Cast safety: n_log2 is a positive integer, and so 2 ** n_log2 is also
+            # a positive integer. Mypy+typeshed can't deduce this, because there's no
+            # way to for them to know that n_log2: int is positive.
+            cast(int, 2**n_log2),
+            r,
+            p,
+            maxmem=maxmem,
+            dklen=size,
         )
     )
 
 
 def str(
-    password, opslimit=OPSLIMIT_INTERACTIVE, memlimit=MEMLIMIT_INTERACTIVE
-):
+    password: bytes,
+    opslimit: int = OPSLIMIT_INTERACTIVE,
+    memlimit: int = MEMLIMIT_INTERACTIVE,
+) -> bytes:
     """
     Hashes a password with a random salt, using the memory-hard
     scryptsalsa208sha256 construct and returning an ascii string
@@ -168,7 +180,7 @@ def str(
     )
 
 
-def verify(password_hash, password):
+def verify(password_hash: bytes, password: bytes) -> bool:
     """
     Takes the output of scryptsalsa208sha256 and compares it against
     a user provided password to see if they are the same

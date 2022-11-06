@@ -27,6 +27,7 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs Makefile
 recursive-include docs/vectors/c-source *.c
+prune docs/_build
 recursive-include tests *.py
 recursive-include tests/data *
 
@@ -36,11 +37,9 @@ global-exclude __pycache__/*
 # Add PyNaCl header files
 recursive-include src/bindings *.py *.h
 
-# Remove our travis files
-exclude .travis.yml
-exclude .travis
-exclude .travis/install.sh
-exclude .travis/run.sh
+# Remove our CI files
+recursive-exclude .github *
+recursive-exclude .circleci *
 
 # Remove readthedocs config
 exclude .readthedocs.yml

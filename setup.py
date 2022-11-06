@@ -23,15 +23,11 @@ import platform
 import shutil
 import subprocess
 import sys
-from distutils.sysconfig import get_config_vars
+from sysconfig import get_config_vars
 
 from setuptools import Distribution, setup
+from setuptools.command.build_clib import build_clib as _build_clib
 from setuptools.command.build_ext import build_ext as _build_ext
-
-try:
-    from setuptools.command.build_clib import build_clib as _build_clib
-except ImportError:
-    from distutils.command.build_clib import build_clib as _build_clib
 
 
 requirements = []
@@ -219,6 +215,7 @@ setup(
     tests_require=test_requirements,
     package_dir={"": "src"},
     packages=["nacl", "nacl.pwhash", "nacl.bindings"],
+    package_data={"nacl": ["py.typed"]},
     ext_package="nacl",
     cffi_modules=["src/bindings/build.py:ffi"],
     cmdclass={"build_clib": build_clib, "build_ext": build_ext},
